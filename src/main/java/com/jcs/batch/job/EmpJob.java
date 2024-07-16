@@ -1,21 +1,19 @@
 package com.jcs.batch.job;
 
-import com.jcs.batch.listener.EmpJobListener;
+import com.jcs.batch.config.ReportDownloadTasklet;
 import com.jcs.batch.listener.EmpStepReadListener;
 import com.jcs.batch.mapper.EmployeeFileRowMapper;
 import com.jcs.batch.model.EmployeeDTO;
 import com.jcs.batch.policy.EmployeeJobSkipPolicy;
 import com.jcs.batch.processor.EmployeeProcessor;
-import com.jcs.batch.tasklet.ArchiveDataCleanup;
 import com.jcs.batch.writer.EmployeeWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -27,22 +25,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-
-import javax.sql.DataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@EnableBatchProcessing
+//@EnableBatchProcessing
 @Slf4j
 public class EmpJob {
 
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
+//    @Autowired
+//    private JobBuilderFactory jobBuilderFactory;
+//
+//    @Autowired
+//    private StepBuilderFactory stepBuilderFactory;
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    private DataSource dataSource;
+//    @Autowired
+//    private DataSource dataSource;
 
     //    using custom ItemWriter
     @Autowired
@@ -53,7 +50,7 @@ public class EmpJob {
     @Bean
     public FlatFileItemReader<EmployeeDTO> reader() {
         FlatFileItemReader<EmployeeDTO> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("static/sample-data.csv"));
+        reader.setResource(new ClassPathResource("static/employees.csv"));
         reader.setLineMapper(lineMapper());
         reader.setLinesToSkip(1);
         return reader;
@@ -98,47 +95,80 @@ public class EmpJob {
 //        return writer;
 //    }
 
-    @Bean
-    public JobExecutionListener listener() {
-        return new EmpJobListener();
-    }
+//    @Bean
+//    public JobExecutionListener listener() {
+//        return new EmpJobListener();
+//    }
+
+//    @Bean
+//    public Step stepA() {
+//        return stepBuilderFactory.get("stepA")
+//                .<EmployeeDTO, EmployeeDTO>chunk(2)
+//                .reader(reader())
+//                .processor(processor())
+//                .writer(employeeWriter)
+//                .faultTolerant().skipPolicy(skipPolicy())
+//                .listener(readListener())
+////                .listener(processListener())
+////                .taskExecutor(taskExecutor())
+//                .build();
+//    }
 
     @Bean
-    public Step stepA() {
-        return stepBuilderFactory.get("stepA")
-                .<EmployeeDTO, EmployeeDTO>chunk(2)
+    public Step stepA(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+
+        return new StepBuilder("stepA",jobRepository)
+                .<EmployeeDTO,EmployeeDTO>chunk(2,transactionManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(employeeWriter)
                 .faultTolerant().skipPolicy(skipPolicy())
                 .listener(readListener())
-//                .listener(processListener())
-//                .taskExecutor(taskExecutor())
                 .build();
     }
 
     @Bean
-    public Step stepB() {
-        return stepBuilderFactory.get("stepB")
-                .<EmployeeDTO, EmployeeDTO>chunk(3)
+    public Step stepB(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+
+        return new StepBuilder("stepB",jobRepository)
+                .<EmployeeDTO,EmployeeDTO>chunk(2,transactionManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(employeeWriter)
-//                .faultTolerant().skipPolicy(skipPolicy())
-//                .listener(readListener())
-//                .listener(processListener())
-//                .taskExecutor(taskExecutor())
                 .build();
     }
 
+//    @Bean
+//    public Step stepB() {
+//        return stepBuilderFactory.get("stepB")
+//                .<EmployeeDTO, EmployeeDTO>chunk(3)
+//                .reader(reader())
+//                .processor(processor())
+//                .writer(employeeWriter)
+////                .faultTolerant().skipPolicy(skipPolicy())
+////                .listener(readListener())
+////                .listener(processListener())
+////                .taskExecutor(taskExecutor())
+//                .build();
+//    }
+
     @Bean
-    public Job jobA() {
-        return jobBuilderFactory.get("emp-job")
-                .start(stepA())
-//                .listener(listener())
-//                .next(stepB())
+    public Job jobA(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new JobBuilder("emp-job",jobRepository)
+                .flow(stepA(jobRepository,transactionManager))
+                .next(stepB(jobRepository,transactionManager))
+                .end()
                 .build();
     }
+
+//    @Bean
+//    public Job jobA() {
+//        return jobBuilderFactory.get("emp-job")
+//                .start(stepA())
+//                .listener(listener())
+//                .next(stepB())
+//                .build();
+//    }
 
     @Bean
     public SkipPolicy skipPolicy() {
@@ -175,4 +205,20 @@ public class EmpJob {
 //                .tasklet(new ArchiveDataCleanup())
 //                .build();
 //    }
+
+    // Report Download Code Start
+
+    @Bean
+    public Job reportDownloadJob(JobRepository jobRepository, PlatformTransactionManager transactionManager, ReportDownloadTasklet reportDownloadTasklet) {
+        return new JobBuilder("reportDownloadJob",jobRepository)
+                .start(reportStep(jobRepository,transactionManager,reportDownloadTasklet))
+                .build();
+    }
+
+    @Bean
+    public Step reportStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, ReportDownloadTasklet reportDownloadTasklet) {
+        return new StepBuilder("reportStep", jobRepository)
+                .tasklet(reportDownloadTasklet, transactionManager)
+                .build();
+    }
 }

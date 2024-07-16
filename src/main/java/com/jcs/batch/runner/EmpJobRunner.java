@@ -22,8 +22,10 @@ public class EmpJobRunner implements CommandLineRunner {
     private ExecutionContext executionContext;
 
     @Autowired
-    @Qualifier("jobA")
+    //@Qualifier("jobA")
+    @Qualifier("reportDownloadJob")
     private Job job;
+
 
     @Override
     public void run(String... args) throws Exception {

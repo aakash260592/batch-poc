@@ -1,0 +1,20 @@
+
+™	java:S1160"WRename this field "INSERT_QUERY" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÎÜë²8Ú£ É„2J$59ec4b8d-3751-4116-aebd-32ad5c4b3aea
+d
+java:S11700"!Make this final field static too.(ÎÜë²8Ü£ É„2J$140e2790-9934-4c88-b909-472c4ca654c4
+…
+java:S6813-"BRemove this field injection and use constructor injection instead.(êæÄÞ8Ü£ É„2J$f973150e-0d20-4d40-a4fa-884812302a8c
+ƒ	java:S125$"<This block of commented-out lines of code should be removed.(Ìˆ¼Öùÿÿÿÿ8Ü£ É„2J$9eb43f21-64ab-4630-99cc-7675501e3ba5
+~	java:S125*"<This block of commented-out lines of code should be removed.(øõìµ8Ü£ É„2J$0d665ae4-d5a9-489c-a55d-3ecd5f84d6c0
+ƒ	java:S125M"<This block of commented-out lines of code should be removed.(ñØ©¨ûÿÿÿÿ8á£ É„2J$e5352c86-8bc4-4999-bf73-d5ad700f605e
+ƒ	java:S125Y"<This block of commented-out lines of code should be removed.(ª†ã’úÿÿÿÿ8æ£ É„2J$36e2def9-ac98-459e-bf31-099c120f6039
+~	java:S125c"<This block of commented-out lines of code should be removed.(Ý×õ8æ£ É„2J$c61945a0-0b6d-491e-9eb0-3930baa3320a
+}	java:S125h"<This block of commented-out lines of code should be removed.(ø—¯P8æ£ É„2J$c8b4d15f-a926-4d7d-9862-bd3276e5b491
+„	java:S125Ž"<This block of commented-out lines of code should be removed.(ÌÓÐôÿÿÿÿÿ8ì£ É„2J$a77f9197-6611-4953-aa81-8bb7613155ff
+„	java:S125¥"<This block of commented-out lines of code should be removed.(»îÞ¶øÿÿÿÿ8î£ É„2J$141eca7d-f3bf-466d-94ea-cd26f0a3fe30
+	java:S125¸"<This block of commented-out lines of code should be removed.(÷ìß±8ï£ É„2J$80386422-f177-4329-b063-640d60817507
+„	java:S125½"<This block of commented-out lines of code should be removed.(ÖûÌ‹ùÿÿÿÿ8ñ£ É„2J$67e4664a-3cf3-4f36-9faf-d002e9c4bd66
+„	java:S125Ä"<This block of commented-out lines of code should be removed.(ž±Åüÿÿÿÿ8ñ£ É„2J$e4c10061-b68e-4214-aaa4-9e25ab3f5b05
+„	java:S125Ë"<This block of commented-out lines of code should be removed.(ëñÖ·úÿÿÿÿ8ñ£ É„2J$1c70084b-aa28-47a9-8048-1ccaaebcda2d
+s
+java:S10680"0Remove this unused "INSERT_QUERY" private field.(ÎÜë²8ö£ É„2J$bc421911-7c7f-48b2-b0c1-880078e55fc3

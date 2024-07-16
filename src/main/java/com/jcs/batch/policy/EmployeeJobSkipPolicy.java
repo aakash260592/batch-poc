@@ -7,11 +7,16 @@ import org.springframework.batch.core.step.skip.SkipPolicy;
 @Slf4j
 public class EmployeeJobSkipPolicy implements SkipPolicy {
     @Override
-    public boolean shouldSkip(Throwable t, int skipCount) throws SkipLimitExceededException {
+    public boolean shouldSkip(Throwable t, long skipCount) throws SkipLimitExceededException {
         log.info("shouldSkip-->skipCount::{}", skipCount);
-        if(skipCount == 3){
-            return false;
-        }
-        return true;
+        return skipCount != 3;
     }
+//    @Override
+//    public boolean shouldSkip(Throwable t, int skipCount) throws SkipLimitExceededException {
+//        log.info("shouldSkip-->skipCount::{}", skipCount);
+//        if(skipCount == 3){
+//            return false;
+//        }
+//        return true;
+//    }
 }
